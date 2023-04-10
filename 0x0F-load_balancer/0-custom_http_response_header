@@ -2,8 +2,34 @@
 # Script that configures Nginx server with a custom header
 apt-get -y update
 apt-get -y install nginx
-echo "Hello World!" > /var/www/html/index.nginx-debian.html
-echo "Ceci n'est pas une page" > /usr/share/nginx/html/custom_404.html
-sed -i "s/server_name _;/server_name _;\n\trewrite ^\/redirect_me https:\/\/github.com\/NwabuezeFranklin permanent;\n\n\terror_page 404 \/custom_404.html;\n\tlocation = \/custom_404.html {\n\t\troot \/usr\/share\/nginx\/html;\n\t\tinternal;\n\t}/" /etc/nginx/sites-available/default
-sed -i "s/include \/etc\/nginx\/sites-enabled\/\*;/include \/etc\/nginx\/sites-enabled\/\*;\n\tadd_header X-Served-By \"$HOSTNAME\";/" /etc/nginx/nginx.conf
-service nginx start
+
+# Remove default Nginx configuration
+sudo rm /etc/nginx/sites-enabled/default
+
+# Create new Nginx configuration
+sudo touch /etc/nginx/sites-available/custom
+sudo ln -s /etc/nginx/sites-available/custom /etc/nginx/sites-enabled/custom
+
+# Edit Nginx configuration file
+sudo bash -c 'cat > /etc/nginx/sites-available/custom << EOL
+server {
+  listen 80 default_server;
+  listen [::]:80 default_server;
+
+  server_name _;
+
+  # Add custom header to HTTP response
+  add_header X-Served-By $hostname;
+
+  # Serve web content
+  root /var/www/html;
+  index index.html;
+
+  location / {
+    try_files $uri $uri/ =404;
+  }
+}
+EOL'
+
+# Restart Nginx to apply configuration
+sudo systemctl restart nginx
