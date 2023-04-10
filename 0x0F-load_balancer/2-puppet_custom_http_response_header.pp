@@ -22,4 +22,4 @@ exec { 'add_header':
 exec { 'restart Nginx':
   provider => shell,
   command  => 'sudo service nginx restart',
-}
+
