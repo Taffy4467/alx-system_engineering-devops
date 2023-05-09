@@ -7,11 +7,14 @@ def top_ten(subreddit):
     
     try:
         response = requests.get(url, headers=headers, params=params, allow_redirects=False)
-        response.raise_for_status()  # Raise an exception for non-2xx status codes
-        data = response.json()
         
-        for post in data["data"]["children"]:
-            print(post["data"]["title"])
+        if response.status_code == 200:
+            data = response.json()
+            
+            for post in data["data"]["children"]:
+                print(post["data"]["title"])
+        else:
+            print("None")
     
     except requests.exceptions.RequestException as e:
         print("An error occurred:", e)
