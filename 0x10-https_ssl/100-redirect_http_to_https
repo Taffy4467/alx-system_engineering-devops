@@ -41,13 +41,13 @@ frontend gandari.tech-http-frontend
         redirect scheme https code 301 if !{ ssl_fc }
         http-request set-header X-Forwarded-Proto http
         default_backend  gandari.tech-backend
-frontend b3zaleel-alx.tech-https-frontend
+frontend gandari.tech-https-frontend
         bind *:443 ssl crt /etc/letsencrypt/live/www.gandari.tech/fullchain.pem
         http-request set-header X-Forwarded-Proto https
         default_backend gandari.tech-backend
 backend gandari.tech-backend
         balance roundrobin
-        server 17272-web-01 52.91.121.146:80 check
-        server 17272-web-02 3.85.136.181:80 check
+        server 111321-web-01 100.25.170.56:80 check
+        server 111321-web-02 100.25.13.5:80 check
 # end of parameters
                                             
